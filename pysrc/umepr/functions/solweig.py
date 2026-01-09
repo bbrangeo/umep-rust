@@ -284,7 +284,8 @@ def Solweig_2025a_calc(
         emis_grid = emis_grid[sl]
         TgK = TgK[sl]
         Tstart = Tstart[sl]
-        TmaxLST = TmaxLST[sl]
+        if np.ndim(TmaxLST) >= 1:
+            TmaxLST = TmaxLST[sl]
         # Note: TgK_wall, Tstart_wall, TmaxLST_wall are scalars, not arrays
         svfalfa = svfalfa[sl]
         svfbuveg = svfbuveg[sl]
@@ -363,13 +364,16 @@ def Solweig_2025a_calc(
             patchchoice = 1
             lv = None
 
+        # Convert amaxvalue to scalar if it's an array
+        amaxvalue_scalar = float(np.max(amaxvalue)) if np.ndim(amaxvalue) > 0 else float(amaxvalue)
+
         # Shadow  images
         if usevegdem == 1:
             result = shadowing.calculate_shadows_wall_ht_25(
                 azimuth,
                 altitude,
                 scale,
-                amaxvalue,
+                amaxvalue_scalar,
                 dsm.astype(np.float32),
                 vegdem.astype(np.float32),
                 vegdem2.astype(np.float32),
